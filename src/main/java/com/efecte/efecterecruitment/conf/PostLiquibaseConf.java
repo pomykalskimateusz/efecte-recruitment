@@ -16,7 +16,7 @@ public class PostLiquibaseConf {
     public MultiTenantSpringLiquibase postLiquibase(DataSource dataSource) {
         var moduleConfig = new MultiTenantSpringLiquibase();
         moduleConfig.setDataSource(dataSource);
-        moduleConfig.setDefaultSchema("posts");
+        moduleConfig.setDefaultSchema("public");
         moduleConfig.setLiquibaseSchema(schema);
         moduleConfig.setChangeLog("db/posts/changelog/postgres/db-changelog.xml");
         return moduleConfig;

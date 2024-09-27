@@ -26,7 +26,7 @@ public class PostRepository {
     public UUID insert(Long accountId, String content) {
         var postId = UUID.randomUUID();
         dslContext.insertInto(POST)
-                .set(POST.ID, UUID.randomUUID())
+                .set(POST.ID, postId)
                 .set(POST.ACCOUNT_ID, accountId)
                 .set(POST.CONTENT, content)
                 .set(POST.VERSION, 1)

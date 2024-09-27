@@ -1,9 +1,9 @@
-create table post
+create table "POST"
 (
-    id                      uuid primary key,
-    account_id              bigint not null,
-    content                 varchar(200),
-    version                 integer not null,
-    created_date_timestamp  timestamp default current_timestamp,
-    modified_date_timestamp timestamp
+    "ID"                      uuid primary key,
+    "ACCOUNT_ID"              bigint not null,
+    "CONTENT"                 varchar(200),
+    "VERSION"                 integer not null,
+    "CREATED_DATE_TIMESTAMP"  timestamp default current_timestamp,
+    "MODIFIED_DATE_TIMESTAMP" timestamp
 );
