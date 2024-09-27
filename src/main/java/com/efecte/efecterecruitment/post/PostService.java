@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -17,10 +18,10 @@ public class PostService {
     PostRepository postRepository;
 
     @Transactional
-    public void savePost(Long accountId, String content) {
+    public UUID savePost(Long accountId, String content) {
         ensureContentIsValid(content);
 
-        postRepository.insert(accountId, content);
+        return postRepository.insert(accountId, content);
     }
 
     @Transactional

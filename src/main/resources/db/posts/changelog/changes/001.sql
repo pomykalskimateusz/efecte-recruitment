@@ -1,4 +1,4 @@
-create table posts
+create table post
 (
     id                      uuid primary key,
     account_id              bigint not null,

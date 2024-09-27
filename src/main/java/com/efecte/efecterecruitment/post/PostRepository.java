@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.efecte.efecterecruitment.jooq.entity.Tables.POSTS_;
+import static com.efecte.efecterecruitment.jooq.entity.Tables.POST;
 
 @Service
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -23,22 +23,24 @@ public class PostRepository {
     DSLContext dslContext;
 
     @Transactional
-    public void insert(Long accountId, String content) {
-        dslContext.insertInto(POSTS_)
-                .set(POSTS_.ID, UUID.randomUUID())
-                .set(POSTS_.ACCOUNT_ID, accountId)
-                .set(POSTS_.CONTENT, content)
-                .set(POSTS_.VERSION, 1)
+    public UUID insert(Long accountId, String content) {
+        var postId = UUID.randomUUID();
+        dslContext.insertInto(POST)
+                .set(POST.ID, UUID.randomUUID())
+                .set(POST.ACCOUNT_ID, accountId)
+                .set(POST.CONTENT, content)
+                .set(POST.VERSION, 1)
                 .execute();
+        return postId;
     }
 
     @Transactional
     public void update(UUID postId, String content, int version) {
-        var conflict = dslContext.update(POSTS_)
-                .set(POSTS_.CONTENT, content)
-                .set(POSTS_.VERSION, POSTS_.VERSION.plus(1))
-                .where(POSTS_.ID.eq(postId))
-                .and(POSTS_.VERSION.eq(version))
+        var conflict = dslContext.update(POST)
+                .set(POST.CONTENT, content)
+                .set(POST.VERSION, POST.VERSION.plus(1))
+                .where(POST.ID.eq(postId))
+                .and(POST.VERSION.eq(version))
                 .execute() == 0;
         if(conflict) {
             throw new ConflictException();
@@ -47,10 +49,10 @@ public class PostRepository {
 
     @Transactional
     public void delete(UUID postId, int version) {
-        dslContext.deleteFrom(POSTS_)
-                .where(POSTS_.ID.eq(postId))
-                .returningResult(POSTS_.VERSION)
-                .fetchOptional(POSTS_.VERSION)
+        dslContext.deleteFrom(POST)
+                .where(POST.ID.eq(postId))
+                .returningResult(POST.VERSION)
+                .fetchOptional(POST.VERSION)
                 .ifPresent(newVersion -> {
                     if (!Objects.equals(newVersion, version)) {
                         throw new ConflictException();
@@ -60,19 +62,19 @@ public class PostRepository {
 
     @Transactional
     public Optional<Post> findByPostId(Long accountId, UUID postId) {
-        return dslContext.select(POSTS_.asterisk())
-                .from(POSTS_)
-                .where(POSTS_.ID.eq(postId))
-                .and(POSTS_.ACCOUNT_ID.eq(accountId))
+        return dslContext.select(POST.asterisk())
+                .from(POST)
+                .where(POST.ID.eq(postId))
+                .and(POST.ACCOUNT_ID.eq(accountId))
                 .fetchOptional()
                 .map(dbRecord -> dbRecord.into(Post.class));
     }
 
     @Transactional
     public List<Post> findByAccountId(Long accountId) {
-        return dslContext.select(POSTS_.asterisk())
-                .from(POSTS_)
-                .where(POSTS_.ACCOUNT_ID.eq(accountId))
+        return dslContext.select(POST.asterisk())
+                .from(POST)
+                .where(POST.ACCOUNT_ID.eq(accountId))
                 .fetch()
                 .map(dbRecord -> dbRecord.into(Post.class));
     }
