@@ -1,0 +1,45 @@
+openapi: 3.0.1
+info:
+  title: Users API
+  version: "1.0.0"
+
+paths:
+  /posts:
+    post:
+      operationId: createPost
+      requestBody:
+        content:
+          application/json:
+            schema:
+              title: CreatePostBody
+              type: object
+              properties:
+                content:
+                  type: string
+                  maxLength: 200
+      responses:
+        '200':
+          $ref: "#/components/responses/Ok"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+components:
+  schemas:
+    Post:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        content:
+          type: string
+        version:
+          type: integer
+  responses:
+    Ok:
+      description: OK
+    NotFound:
+      description: Resource not found
+    InternalServerError:
+      description: An unexpected error occurred on the server
+    Conflict:
+      description: Conflict with the current state of the target resource
