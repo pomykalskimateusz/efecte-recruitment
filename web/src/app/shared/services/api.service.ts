@@ -34,6 +34,8 @@ export class ApiService {
 
   buildErrorMessage = (error: HttpErrorResponse) => {
     if(error.status === 404) return 'Resource not found'
+    if(error.status === 409) return 'Outdated post version, refresh and try again'
+    if(error.status === 400) return 'Incorrect input data, content length should be in range 1-200'
     return 'Something went wrong. Please try again.'
   }
 }
