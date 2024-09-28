@@ -104,6 +104,11 @@ public class PostServiceTest extends DatabaseContainer {
     }
 
     @Test
+    void shouldThrowExceptionForUpdatingNotExistingPost() {
+        assertThrows(IllegalArgumentException.class, () -> postService.updatePost(1L, UUID.randomUUID(), generatePostContent(10), 1));
+    }
+
+    @Test
     void shouldDeletePostById() {
         // GIVEN mocked session account id and created two posts
         var sessionAccountId = 1L;
@@ -127,10 +132,9 @@ public class PostServiceTest extends DatabaseContainer {
         // GIVEN mocked session account id and created two posts
         var sessionAccountId = 1L;
         var postId1 = createPost(sessionAccountId);
-        var postId2 = createPost(sessionAccountId);
 
         var postsBeforeDeleting = postService.fetchPostList(sessionAccountId);
-        assertEquals(2, postsBeforeDeleting.size());
+        assertEquals(1, postsBeforeDeleting.size());
 
         // WHEN deleting post by not post owner THEN exception should be thrown
         assertThrows(IllegalArgumentException.class, () -> postService.deletePost(2L, postId1, 1));
@@ -145,6 +149,11 @@ public class PostServiceTest extends DatabaseContainer {
 
         // WHEN deleting post with outdated version THEN conflict exception should be thrown
         assertThrows(ConflictException.class, () -> postService.deletePost(sessionAccountId, postId, 1));
+    }
+
+    @Test
+    void shouldThrowExceptionForDeletingNotExistingPost() {
+        assertThrows(IllegalArgumentException.class, () -> postService.deletePost(1L, UUID.randomUUID(), 1));
     }
 
     private UUID createPost(Long accountId) {
