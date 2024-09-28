@@ -35,11 +35,12 @@ public class PostRepository {
     }
 
     @Transactional
-    public Optional<Post> update(UUID postId, String content, int version) {
+    public Optional<Post> update(Long accountId, UUID postId, String content, int version) {
         return dslContext.update(POST)
                 .set(POST.CONTENT, content)
                 .set(POST.VERSION, POST.VERSION.plus(1))
                 .where(POST.ID.eq(postId))
+                .and(POST.ACCOUNT_ID.eq(accountId))
                 .returning(POST.asterisk())
                 .fetchOptional()
                 .map(dbRecord -> {
@@ -51,15 +52,17 @@ public class PostRepository {
     }
 
     @Transactional
-    public void delete(UUID postId, int version) {
-        dslContext.deleteFrom(POST)
+    public Optional<UUID> delete(Long accountId, UUID postId, int version) {
+        return dslContext.deleteFrom(POST)
                 .where(POST.ID.eq(postId))
-                .returningResult(POST.VERSION)
-                .fetchOptional(POST.VERSION)
-                .ifPresent(newVersion -> {
-                    if (!Objects.equals(newVersion, version)) {
+                .and(POST.ACCOUNT_ID.eq(accountId))
+                .returningResult(POST.ID, POST.VERSION)
+                .fetchOptional()
+                .map(dbRecord -> {
+                    if (!Objects.equals(dbRecord.get(POST.VERSION), version)) {
                         throw new ConflictException();
                     }
+                    return dbRecord.get(POST.ID);
                 });
     }
 

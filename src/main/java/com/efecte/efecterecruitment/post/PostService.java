@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -30,18 +29,17 @@ public class PostService {
     @Transactional
     public Post updatePost(Long accountId, UUID postId, String content, int version) {
         ensureContentIsValid(content);
-        ensurePostCanBeAccessed(accountId, postId);
 
         return postRepository
-                .update(postId, content, version)
+                .update(accountId, postId, content, version)
                 .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Transactional
-    public void deletePost(Long accountId, UUID postId, int version) {
-        ensurePostCanBeAccessed(accountId, postId);
-
-        postRepository.delete(postId, version);
+    public UUID deletePost(Long accountId, UUID postId, int version) {
+        return postRepository
+                .delete(accountId, postId, version)
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Transactional
@@ -60,11 +58,5 @@ public class PostService {
         if (content == null || content.isEmpty() || content.length() > 200) {
             throw new IllegalArgumentException("Incorrect post content value. Should be not empty string value with max length 200");
         }
-    }
-
-    private void ensurePostCanBeAccessed(Long accountId, UUID postId) {
-        postRepository
-                .findByPostId(accountId, postId)
-                .orElseThrow(ResourceNotFoundException::new);
     }
 }

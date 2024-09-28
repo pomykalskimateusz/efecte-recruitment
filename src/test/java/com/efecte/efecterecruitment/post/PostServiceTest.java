@@ -123,7 +123,8 @@ public class PostServiceTest extends DatabaseContainer {
         assertEquals(2, postsBeforeDeleting.size());
 
         // WHEN deleting post by id
-        postService.deletePost(sessionAccountId, postId1, 1);
+        var deletedPostId = postService.deletePost(sessionAccountId, postId1, 1);
+        assertEquals(postId1, deletedPostId);
 
         // THEN post should not be available and queried. Only post1 should be returned
         var postsAfterDeleting = postService.fetchPostList(sessionAccountId);
