@@ -24,14 +24,14 @@ public class PostRepository {
 
     @Transactional
     public UUID insert(Long accountId, String content) {
-        var postId = UUID.randomUUID();
-        dslContext.insertInto(POST)
-                .set(POST.ID, postId)
+        return dslContext.insertInto(POST)
+                .set(POST.ID, UUID.randomUUID())
                 .set(POST.ACCOUNT_ID, accountId)
                 .set(POST.CONTENT, content)
                 .set(POST.VERSION, 1)
-                .execute();
-        return postId;
+                .returningResult(POST.ID)
+                .fetchOne()
+                .map(dbRecord -> dbRecord.get(POST.ID));
     }
 
     @Transactional
