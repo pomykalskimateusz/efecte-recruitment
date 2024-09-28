@@ -3,11 +3,13 @@
   <div id="header">
       Create new post
   </div>
-  <div id="content">
-    <textarea maxlength="200" type="text"></textarea>
-  </div>
-  <div id="actions">
-    <button class="cancel" (click)="noteStateService.hideCreatePostDialog()">Cancel</button>
-    <button>Save</button>
-  </div>
+  <form [formGroup]="createPostForm" (ngSubmit)="onSubmit()">
+    <div id="form-content">
+      <textarea id="content" formControlName="content"></textarea>
+    </div>
+    <div id="actions">
+      <button class="cancel" (click)="noteStateService.hideCreatePostDialog()">Cancel</button>
+      <button type="submit" [disabled]="createPostForm.invalid">Save</button>
+    </div>
+  </form>
 </div>

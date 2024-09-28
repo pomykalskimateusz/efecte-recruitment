@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +15,4 @@ export class NoteStateServiceService {
   hideCreatePostDialog() {
     this.isCreatePostDialogVisible = false;
   }
-
-  constructor() { }
 }
