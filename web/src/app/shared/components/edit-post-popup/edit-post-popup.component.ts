@@ -3,7 +3,7 @@ import {NoteStateServiceService} from "../../services/note-state-service.service
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {NgIf} from "@angular/common";
-import {Note} from "../../../models/Note";
+import {Post} from "../../../models/post.model";
 
 @Component({
   selector: 'app-edit-post-popup',
@@ -18,7 +18,7 @@ import {Note} from "../../../models/Note";
 export class EditPostPopupComponent implements OnInit {
   httpClient = inject(HttpClient);
   errorMessage: string | null = null
-  post: Note | null = null;
+  post: Post | null = null;
 
   createPostForm: FormGroup = new FormGroup({
     content: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(200)])
@@ -29,7 +29,7 @@ export class EditPostPopupComponent implements OnInit {
   ngOnInit() {
     this.noteStateService.currentPostId.subscribe((postId) => {
         if(postId !== null && this.post === null) {
-          this.httpClient.get<Note>(`http://localhost:8080/posts/${postId}`).subscribe(data => {
+          this.httpClient.get<Post>(`http://localhost:8080/posts/${postId}`).subscribe(data => {
             this.post = data
             this.createPostForm.get('content')?.setValue(data.content)
           })

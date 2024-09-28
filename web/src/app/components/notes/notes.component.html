@@ -1,12 +1,10 @@
 <div class="notes-container">
-  <div class="note-box" (click)="noteStateService.showCreatePostDialog()">
+  <div class="note-box" (click)="createPostDialogOpened()">
     <div class="content" style="font-size: 50px; padding-top:35%">+</div>
   </div>
-  <div *ngFor="let note of notes">
-    <div class="note-box" (click)="noteStateService.showEditPostDialog(note.id)">
-      <div class="content">{{ note.content }}</div>
+  <div *ngFor="let post of posts">
+    <div class="note-box" (click)="noteStateService.showEditPostDialog(post.id)">
+      <div class="content">{{ post.content }}</div>
     </div>
   </div>
 </div>
-<app-create-post-popup *ngIf="noteStateService.isCreatePostDialogVisible"></app-create-post-popup>
-<app-edit-post-popup *ngIf="noteStateService.isEditPostDialogVisible"></app-edit-post-popup>

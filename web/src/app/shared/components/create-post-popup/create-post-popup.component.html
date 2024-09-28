@@ -1,4 +1,4 @@
-<div id="overlay" (click)="noteStateService.hideCreatePostDialog()"></div>
+<div id="overlay" (click)="onPopupCancelled()"></div>
 <div id="container">
   <div id="header">
       Create new post
@@ -11,7 +11,7 @@
       <div id="error" *ngIf="errorMessage !== null">{{errorMessage}}</div>
     </div>
     <div id="actions">
-      <button class="cancel" (click)="noteStateService.hideCreatePostDialog()">Cancel</button>
+      <button class="cancel" (click)="onPopupCancelled()">Cancel</button>
       <button type="submit" [disabled]="createPostForm.invalid">Save</button>
     </div>
   </form>

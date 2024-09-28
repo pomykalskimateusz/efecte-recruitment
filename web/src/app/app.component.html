@@ -1,3 +1,14 @@
 <div class="app-container">
-  <app-notes></app-notes>
+  <app-create-post-popup
+    *ngIf="isCreateDialogVisible"
+    (postCreatedEvent)="handlePostCreated()"
+    (createPopupCancelledEvent)="closeCreatePostDialog()"
+  ></app-create-post-popup>
+  <app-notes
+    [posts]="posts"
+    (createPostDialogOpenedEvent)="showCreatePostDialog()"
+  ></app-notes>
 </div>
+
+
+<!--  <app-edit-post-popup *ngIf="noteStateService.isEditPostDialogVisible"></app-edit-post-popup>-->

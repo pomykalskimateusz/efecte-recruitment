@@ -1,4 +1,4 @@
-export class Note {
+export class Post {
   id: string;
   content: string;
   version: number;
