@@ -103,6 +103,50 @@ public class PostServiceTest extends DatabaseContainer {
         assertThrows(IllegalArgumentException.class, () -> postService.updatePost(2L, postId, generatePostContent(10), 1));
     }
 
+    @Test
+    void shouldDeletePostById() {
+        // GIVEN mocked session account id and created two posts
+        var sessionAccountId = 1L;
+        var postId1 = createPost(sessionAccountId);
+        var postId2 = createPost(sessionAccountId);
+
+        var postsBeforeDeleting = postService.fetchPostList(sessionAccountId);
+        assertEquals(2, postsBeforeDeleting.size());
+
+        // WHEN deleting post by id
+        postService.deletePost(sessionAccountId, postId1, 1);
+
+        // THEN post should not be available and queried. Only post1 should be returned
+        var postsAfterDeleting = postService.fetchPostList(sessionAccountId);
+        assertEquals(1, postsAfterDeleting.size());
+        assertEquals(postId2, postsAfterDeleting.get(0).getId());
+    }
+
+    @Test
+    void shouldThrowExceptionForDeletingPostByNotOwner() {
+        // GIVEN mocked session account id and created two posts
+        var sessionAccountId = 1L;
+        var postId1 = createPost(sessionAccountId);
+        var postId2 = createPost(sessionAccountId);
+
+        var postsBeforeDeleting = postService.fetchPostList(sessionAccountId);
+        assertEquals(2, postsBeforeDeleting.size());
+
+        // WHEN deleting post by not post owner THEN exception should be thrown
+        assertThrows(IllegalArgumentException.class, () -> postService.deletePost(2L, postId1, 1));
+    }
+
+    @Test
+    void shouldThrowExceptionForDeletingPostWithOutdatedVersion() {
+        // GIVEN mocked session account id and updated post (version equals 2)
+        var sessionAccountId = 1L;
+        var postId = createPost(sessionAccountId);
+        postService.updatePost(sessionAccountId, postId, generatePostContent(10), 1);
+
+        // WHEN deleting post with outdated version THEN conflict exception should be thrown
+        assertThrows(ConflictException.class, () -> postService.deletePost(sessionAccountId, postId, 1));
+    }
+
     private UUID createPost(Long accountId) {
         return postService.savePost(accountId, generatePostContent(100));
     }
