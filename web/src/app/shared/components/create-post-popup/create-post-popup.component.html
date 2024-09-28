@@ -5,7 +5,7 @@
   </div>
   <form [formGroup]="createPostForm" (ngSubmit)="onSubmit()">
     <div id="form-content">
-      <textarea id="content" formControlName="content"></textarea>
+      <textarea id="content" maxlength="200" formControlName="content"></textarea>
     </div>
     <div id="error-wrapper">
       <div id="error" *ngIf="errorMessage !== null">{{errorMessage}}</div>
