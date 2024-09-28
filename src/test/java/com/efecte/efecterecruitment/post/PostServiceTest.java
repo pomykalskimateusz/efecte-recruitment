@@ -24,7 +24,7 @@ public class PostServiceTest extends DatabaseContainer {
 
     @AfterEach
     void afterEach() {
-        super.cleanDatabase("posts", false);
+        super.cleanDatabase("public", false);
     }
 
     @ParameterizedTest()
