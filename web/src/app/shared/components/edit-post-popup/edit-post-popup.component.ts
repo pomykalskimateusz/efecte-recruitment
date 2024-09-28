@@ -39,6 +39,7 @@ export class EditPostPopupComponent implements OnInit {
 
   cancelEditingPopup() {
     this.post = null;
+    this.noteStateService.hideEditPostDialog();
   }
 
   deletePost() {
