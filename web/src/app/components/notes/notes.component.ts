@@ -4,6 +4,7 @@ import {NgForOf, NgIf} from "@angular/common";
 import {HttpClient} from "@angular/common/http";
 import {CreatePostPopupComponent} from "../../shared/components/create-post-popup/create-post-popup.component";
 import {NoteStateServiceService} from "../../shared/services/note-state-service.service";
+import {EditPostPopupComponent} from "../../shared/components/edit-post-popup/edit-post-popup.component";
 
 @Component({
   selector: 'app-notes',
@@ -11,7 +12,8 @@ import {NoteStateServiceService} from "../../shared/services/note-state-service.
   imports: [
     NgForOf,
     CreatePostPopupComponent,
-    NgIf
+    NgIf,
+    EditPostPopupComponent
   ],
   templateUrl: './notes.component.html',
   styleUrl: './notes.component.css'

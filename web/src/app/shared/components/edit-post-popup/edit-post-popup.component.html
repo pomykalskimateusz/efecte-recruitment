@@ -1,0 +1,19 @@
+<div id="overlay" (click)="noteStateService.hideEditPostDialog()"></div>
+<div id="container">
+  <div id="header">
+      Create new post
+  </div>
+  <form [formGroup]="createPostForm" (ngSubmit)="onSubmit()">
+    <div id="form-content">
+      <textarea id="content" maxlength="200" formControlName="content"></textarea>
+    </div>
+    <div id="error-wrapper">
+      <div id="error" *ngIf="errorMessage !== null">{{errorMessage}}</div>
+    </div>
+    <div id="actions">
+      <button class="cancel" (click)="cancelEditingPopup()">Cancel</button>
+      <button class="delete" (click)="deletePost()">Delete</button>
+      <button type="submit" [disabled]="createPostForm.invalid">Save</button>
+    </div>
+  </form>
+</div>
