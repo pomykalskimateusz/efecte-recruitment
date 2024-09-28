@@ -1,16 +1,17 @@
 package com.efecte.efecterecruitment.post;
 
 import com.efecte.efecterecruitment.exception.ConflictException;
+import com.efecte.efecterecruitment.jooq.entity.tables.records.PostRecord;
 import com.efecte.efecterecruitment.model.Post;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.jooq.DSLContext;
+import org.jooq.Record;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,41 +24,51 @@ public class PostRepository {
     DSLContext dslContext;
 
     @Transactional
-    public UUID insert(Long accountId, String content) {
+    public Optional<Post> insert(Long accountId, String content) {
         return dslContext.insertInto(POST)
                 .set(POST.ID, UUID.randomUUID())
                 .set(POST.ACCOUNT_ID, accountId)
                 .set(POST.CONTENT, content)
                 .set(POST.VERSION, 1)
-                .returningResult(POST.ID)
-                .fetchOne()
-                .map(dbRecord -> dbRecord.get(POST.ID));
+                .returningResult(POST.asterisk())
+                .fetchOptional()
+                .map(dbRecord -> dbRecord.into(Post.class));
     }
 
     @Transactional
-    public void update(UUID postId, String content, int version) {
-        var conflict = dslContext.update(POST)
+    public Optional<Post> update(Long accountId, UUID postId, String content, int version) {
+        return dslContext.update(POST)
                 .set(POST.CONTENT, content)
                 .set(POST.VERSION, POST.VERSION.plus(1))
                 .where(POST.ID.eq(postId))
-                .and(POST.VERSION.eq(version))
-                .execute() == 0;
-        if(conflict) {
-            throw new ConflictException();
-        }
+                .and(POST.ACCOUNT_ID.eq(accountId))
+                .returning(POST.asterisk())
+                .fetchOptional()
+                .map(dbRecord -> {
+                    throwExceptionIfVersionConflict(dbRecord, version + 1);
+
+                    return dbRecord.into(Post.class);
+                });
     }
 
     @Transactional
-    public void delete(UUID postId, int version) {
-        dslContext.deleteFrom(POST)
+    public Optional<UUID> delete(Long accountId, UUID postId, int version) {
+        return dslContext.deleteFrom(POST)
                 .where(POST.ID.eq(postId))
-                .returningResult(POST.VERSION)
-                .fetchOptional(POST.VERSION)
-                .ifPresent(newVersion -> {
-                    if (!Objects.equals(newVersion, version)) {
-                        throw new ConflictException();
-                    }
+                .and(POST.ACCOUNT_ID.eq(accountId))
+                .returningResult(POST.asterisk())
+                .fetchOptional()
+                .map(dbRecord -> {
+                    throwExceptionIfVersionConflict(dbRecord, version);
+
+                    return dbRecord.get(POST.ID);
                 });
+    }
+
+    private void throwExceptionIfVersionConflict(Record dbRecord, int version) {
+        if(dbRecord.get(POST.VERSION) != version) {
+            throw new ConflictException();
+        }
     }
 
     @Transactional

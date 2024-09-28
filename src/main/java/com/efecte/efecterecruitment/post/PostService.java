@@ -1,5 +1,6 @@
 package com.efecte.efecterecruitment.post;
 
+import com.efecte.efecterecruitment.exception.ResourceNotFoundException;
 import com.efecte.efecterecruitment.model.Post;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,32 +18,35 @@ public class PostService {
     PostRepository postRepository;
 
     @Transactional
-    public UUID savePost(Long accountId, String content) {
+    public Post savePost(Long accountId, String content) {
         ensureContentIsValid(content);
 
-        return postRepository.insert(accountId, content);
+        return postRepository
+                .insert(accountId, content)
+                .orElseThrow(RuntimeException::new);
     }
 
     @Transactional
-    public void updatePost(Long accountId, UUID postId, String content, int version) {
+    public Post updatePost(Long accountId, UUID postId, String content, int version) {
         ensureContentIsValid(content);
-        ensurePostCanBeAccessed(accountId, postId);
 
-        postRepository.update(postId, content, version);
+        return postRepository
+                .update(accountId, postId, content, version)
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Transactional
-    public void deletePost(Long accountId, UUID postId, int version) {
-        ensurePostCanBeAccessed(accountId, postId);
-
-        postRepository.delete(postId, version);
+    public UUID deletePost(Long accountId, UUID postId, int version) {
+        return postRepository
+                .delete(accountId, postId, version)
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Transactional
     public Post fetchPost(Long accountId, UUID postId) {
         return postRepository
                 .findByPostId(accountId, postId)
-                .orElseThrow(() -> new IllegalArgumentException("Post not found: " + postId));
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Transactional
@@ -54,11 +58,5 @@ public class PostService {
         if (content == null || content.isEmpty() || content.length() > 200) {
             throw new IllegalArgumentException("Incorrect post content value. Should be not empty string value with max length 200");
         }
-    }
-
-    private void ensurePostCanBeAccessed(Long accountId, UUID postId) {
-        postRepository
-                .findByPostId(accountId, postId)
-                .orElseThrow(() -> new IllegalArgumentException("Session account does not have access to post: " + postId));
     }
 }
