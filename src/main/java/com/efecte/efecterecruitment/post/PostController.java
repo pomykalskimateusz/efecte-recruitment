@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,7 +20,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class PostController implements PostsApi {
+    static String INDEX_HTML_PATH = "/web/browser/index.html";
+
     PostService postService;
+
+    @GetMapping("/application")
+    public String index() {
+        return INDEX_HTML_PATH;
+    }
 
     @Override
     public ResponseEntity<Post> createPost(CreatePostBody body) {
