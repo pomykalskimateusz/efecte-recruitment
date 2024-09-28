@@ -86,6 +86,7 @@ public class PostRepository {
         return dslContext.select(POST.asterisk())
                 .from(POST)
                 .where(POST.ACCOUNT_ID.eq(accountId))
+                .orderBy(POST.CREATED_DATE_TIMESTAMP.asc())
                 .fetch()
                 .map(dbRecord -> dbRecord.into(Post.class));
     }

@@ -1,0 +1,19 @@
+<div id="overlay" (click)="onPopupCancelled()"></div>
+<div id="container">
+  <div id="header">
+      Edit existing post
+  </div>
+  <form [formGroup]="createPostForm" (ngSubmit)="onSubmit()">
+    <div id="form-content">
+      <textarea id="content" maxlength="200" formControlName="content"></textarea>
+    </div>
+    <div id="error-wrapper">
+      <div id="error" *ngIf="errorMessage !== null">{{errorMessage}}</div>
+    </div>
+    <div id="actions">
+      <button type="button" class="cancel" (click)="onPopupCancelled()">Cancel</button>
+      <button type="button" class="delete" (click)="deletePost()">Delete</button>
+      <button type="submit" [disabled]="createPostForm.invalid">Save</button>
+    </div>
+  </form>
+</div>

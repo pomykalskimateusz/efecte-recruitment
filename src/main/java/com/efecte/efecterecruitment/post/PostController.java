@@ -12,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,7 +25,12 @@ public class PostController implements PostsApi {
 
     PostService postService;
 
-    @GetMapping("/application")
+    @GetMapping("/{file}")
+    public String staticFile(@PathVariable String file) {
+        return "/web/browser/" + file;
+    }
+
+    @GetMapping()
     public String index() {
         return INDEX_HTML_PATH;
     }
