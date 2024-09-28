@@ -7,6 +7,9 @@
     <div id="form-content">
       <textarea id="content" formControlName="content"></textarea>
     </div>
+    <div id="error-wrapper">
+      <div id="error" *ngIf="errorMessage !== null">{{errorMessage}}</div>
+    </div>
     <div id="actions">
       <button class="cancel" (click)="noteStateService.hideCreatePostDialog()">Cancel</button>
       <button type="submit" [disabled]="createPostForm.invalid">Save</button>

@@ -1,20 +1,22 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {NoteStateServiceService} from "../../services/note-state-service.service";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {HttpClient} from "@angular/common/http";
-import {Note} from "../../../models/Note";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-create-post-popup',
   standalone: true,
   imports: [
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgIf
   ],
   templateUrl: './create-post-popup.component.html',
   styleUrl: './create-post-popup.component.css'
 })
 export class CreatePostPopupComponent implements OnInit {
   httpClient = inject(HttpClient);
+  errorMessage: string | null = null
 
   createPostForm: FormGroup = new FormGroup({
     content: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(200)])
@@ -27,8 +29,12 @@ export class CreatePostPopupComponent implements OnInit {
   onSubmit() {
     console.log(this.createPostForm.value);
     this.httpClient.post(`http://localhost:8080/posts`, {content: this.createPostForm.value.content})
-      .subscribe((_) => {
+      .subscribe((result) => {
         this.noteStateService.hideCreatePostDialog();
-    })
+    }, (error: HttpErrorResponse) => {
+        if(error.status === 500) {
+          this.errorMessage = 'Something went wrong. Try again.'
+        }
+      })
   }
 }
