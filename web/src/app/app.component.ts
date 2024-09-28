@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {NotesComponent} from "./components/notes/notes.component";
 import {HttpClientModule} from "@angular/common/http";
+import {CreatePostPopupComponent} from "./shared/components/create-post-popup/create-post-popup.component";
 
 
 @Component({
@@ -10,6 +11,7 @@ import {HttpClientModule} from "@angular/common/http";
   imports: [
     HttpClientModule,
     NotesComponent,
+    CreatePostPopupComponent
   ],
   styleUrl: './app.component.css'
 })

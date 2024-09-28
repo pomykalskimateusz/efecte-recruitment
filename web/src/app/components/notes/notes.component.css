@@ -6,13 +6,13 @@
   margin: auto;
 }
 .note-box {
-  border: 1px solid;
+  border: 1.5px solid cornflowerblue;
   border-radius: 5px;
   padding: 10px;
   margin: 10px 0;
   width: 200px;
   height: 200px;
-  background: aliceblue;
+  background: white;
   font-family: Arial, sans-serif;
   justify-content: center;
   text-align: center;

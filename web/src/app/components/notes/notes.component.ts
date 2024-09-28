@@ -1,13 +1,17 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {Note} from "../../models/Note";
-import {NgForOf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
 import {HttpClient} from "@angular/common/http";
+import {CreatePostPopupComponent} from "../../shared/components/create-post-popup/create-post-popup.component";
+import {NoteStateServiceService} from "../../shared/services/note-state-service.service";
 
 @Component({
   selector: 'app-notes',
   standalone: true,
   imports: [
-    NgForOf
+    NgForOf,
+    CreatePostPopupComponent,
+    NgIf
   ],
   templateUrl: './notes.component.html',
   styleUrl: './notes.component.css'
@@ -17,8 +21,7 @@ export class NotesComponent implements OnInit {
 
   notes: Note[] = [];
 
-  constructor() {
-  }
+  constructor(public noteStateService: NoteStateServiceService) {}
 
   ngOnInit(): void {
     this.fetchNotes();

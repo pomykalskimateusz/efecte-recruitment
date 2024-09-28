@@ -1,0 +1,13 @@
+<div id="overlay" (click)="noteStateService.hideCreatePostDialog()"></div>
+<div id="container">
+  <div id="header">
+      Create new post
+  </div>
+  <div id="content">
+    <textarea maxlength="200" type="text"></textarea>
+  </div>
+  <div id="actions">
+    <button class="cancel" (click)="noteStateService.hideCreatePostDialog()">Cancel</button>
+    <button>Save</button>
+  </div>
+</div>
