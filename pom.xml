@@ -89,7 +89,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <finalName>efecte-post-it</finalName>
-                    <mainClass>com.efecte.efecterecruitment.EfectePostItApplication</mainClass>
+                    <mainClass>com.efecte.efecterecruitment.PostItApplication</mainClass>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>

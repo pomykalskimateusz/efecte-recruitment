@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -27,20 +26,15 @@ public class PostService {
     @Transactional
     public void updatePost(Long accountId, UUID postId, String content, int version) {
         ensureContentIsValid(content);
-        ensureAccountHasAccess(accountId, postId);
+        ensurePostCanBeAccessed(accountId, postId);
 
         postRepository.update(postId, content, version);
     }
 
-    private void ensureContentIsValid(String content) {
-        if (content == null || content.isEmpty() || content.length() > 200) {
-            throw new IllegalArgumentException("Incorrect post content value. Should be not empty string value with max length 200");
-        }
-    }
-
     @Transactional
     public void deletePost(Long accountId, UUID postId, int version) {
-        ensureAccountHasAccess(accountId, postId);
+        ensurePostCanBeAccessed(accountId, postId);
+
         postRepository.delete(postId, version);
     }
 
@@ -56,7 +50,13 @@ public class PostService {
         return postRepository.findByAccountId(accountId);
     }
 
-    private void ensureAccountHasAccess(Long accountId, UUID postId) {
+    private void ensureContentIsValid(String content) {
+        if (content == null || content.isEmpty() || content.length() > 200) {
+            throw new IllegalArgumentException("Incorrect post content value. Should be not empty string value with max length 200");
+        }
+    }
+
+    private void ensurePostCanBeAccessed(Long accountId, UUID postId) {
         postRepository
                 .findByPostId(accountId, postId)
                 .orElseThrow(() -> new IllegalArgumentException("Session account does not have access to post: " + postId));
