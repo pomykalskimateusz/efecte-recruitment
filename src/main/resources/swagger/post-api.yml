@@ -5,8 +5,23 @@ info:
 
 paths:
   /posts:
+    get:
+      operationId: readPostList
+      description: Endpoint for reading session account posts
+      responses:
+        '200':
+          description: Read session account posts response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
     post:
       operationId: createPost
+      description: Endpoint for creating post
       requestBody:
         content:
           application/json:
@@ -19,7 +34,105 @@ paths:
                   maxLength: 200
       responses:
         '200':
-          $ref: "#/components/responses/Ok"
+          description: Created post response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '409':
+          $ref: "#/components/responses/Conflict"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+  /posts/{postId}:
+    get:
+      operationId: readPost
+      description: Endpoint for reading post by id
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Read post response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      operationId: updatePost
+      description: Endpoint for updating post
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              title: UpdatePostBody
+              type: object
+              properties:
+                content:
+                  type: string
+                  maxLength: 200
+                version:
+                  type: integer
+      responses:
+        '200':
+          description: Updated post response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '409':
+          $ref: "#/components/responses/Conflict"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      operationId: deletePost
+      description: Endpoint for deleting post by id
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: version
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Delete post response
+          content:
+            application/json:
+              schema:
+                title: DeletePostResponse
+                type: object
+                properties:
+                  postId:
+                    type: string
+                    format: uuid
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '409':
+          $ref: "#/components/responses/Conflict"
         '500':
           $ref: "#/components/responses/InternalServerError"
 components:
