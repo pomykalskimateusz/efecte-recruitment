@@ -3,7 +3,7 @@
     <div class="content" style="font-size: 50px; padding-top:35%">+</div>
   </div>
   <div *ngFor="let post of posts">
-    <div class="note-box" (click)="noteStateService.showEditPostDialog(post.id)">
+    <div class="note-box" (click)="editPostDialogOpened(post.id)">
       <div class="content">{{ post.content }}</div>
     </div>
   </div>

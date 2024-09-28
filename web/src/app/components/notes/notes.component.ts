@@ -1,8 +1,7 @@
-import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Post} from "../../models/post.model";
 import {NgForOf, NgIf} from "@angular/common";
 import {CreatePostPopupComponent} from "../../shared/components/create-post-popup/create-post-popup.component";
-import {NoteStateServiceService} from "../../shared/services/note-state-service.service";
 import {EditPostPopupComponent} from "../../shared/components/edit-post-popup/edit-post-popup.component";
 
 @Component({
@@ -20,10 +19,14 @@ import {EditPostPopupComponent} from "../../shared/components/edit-post-popup/ed
 export class NotesComponent {
   @Input() posts: Post[] = [];
   @Output() createPostDialogOpenedEvent = new EventEmitter<string>();
+  @Output() editPostDialogOpenedEvent = new EventEmitter<string>()
+
 
   createPostDialogOpened() {
     this.createPostDialogOpenedEvent.emit();
   }
 
-  constructor(public noteStateService: NoteStateServiceService) {}
+  editPostDialogOpened(postId: string) {
+    this.editPostDialogOpenedEvent.emit(postId)
+  }
 }

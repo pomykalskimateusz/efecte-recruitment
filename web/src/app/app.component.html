@@ -4,11 +4,16 @@
     (postCreatedEvent)="handlePostCreated()"
     (createPopupCancelledEvent)="closeCreatePostDialog()"
   ></app-create-post-popup>
+  <app-edit-post-popup
+    *ngIf="isEditDialogVisible"
+    [post]="editedPost"
+    (editPopupCancelledEvent)="closeEditPostDialog()"
+    (postDeletedEvent)="handlePostModified()"
+    (postUpdatedEvent)="handlePostModified()"
+  ></app-edit-post-popup>
   <app-notes
     [posts]="posts"
     (createPostDialogOpenedEvent)="showCreatePostDialog()"
+    (editPostDialogOpenedEvent)="showEditPostDialog($event)"
   ></app-notes>
 </div>
-
-
-<!--  <app-edit-post-popup *ngIf="noteStateService.isEditPostDialogVisible"></app-edit-post-popup>-->
