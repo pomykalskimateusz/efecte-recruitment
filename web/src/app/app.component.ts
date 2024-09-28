@@ -1,10 +1,11 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {PostsComponent} from "./components/posts/posts.component";
-import {HttpClient, HttpClientModule} from "@angular/common/http";
+import {HttpClientModule} from "@angular/common/http";
 import {CreatePostPopupComponent} from "./components/create-post-popup/create-post-popup.component";
 import {EditPostPopupComponent} from "./components/edit-post-popup/edit-post-popup.component";
 import {Post,} from "./models/post.model";
 import {NgIf} from "@angular/common";
+import {ApiService} from "./shared/services/api.service";
 
 
 @Component({
@@ -16,7 +17,10 @@ import {NgIf} from "@angular/common";
     PostsComponent,
     CreatePostPopupComponent,
     EditPostPopupComponent,
-    NgIf
+    NgIf,
+  ],
+  providers: [
+    ApiService
   ],
   styleUrl: './app.component.css',
 })
@@ -26,7 +30,7 @@ export class AppComponent implements OnInit {
   posts: Post[] = []
   editedPost: Post | null = null
 
-  httpClient = inject(HttpClient)
+  constructor(private apiService: ApiService) {}
 
   showCreatePostDialog() {
     this.isCreateDialogVisible = true
@@ -60,14 +64,12 @@ export class AppComponent implements OnInit {
   }
 
   private fetchPosts(): void {
-    this.httpClient
-      .get<Post[]>(`http://localhost:8080/posts`)
-      .subscribe((data) => this.posts = data)
+    this.apiService.fetchPostList((posts) => this.posts = posts)
   }
 
   private fetchSinglePost(postId: string): void {
-    this.httpClient.get<Post>(`http://localhost:8080/posts/${postId}`).subscribe(data => {
-      this.editedPost = data
+    this.apiService.fetchPost(postId, (post) => {
+      this.editedPost = post
       this.isEditDialogVisible = true
     })
   }
