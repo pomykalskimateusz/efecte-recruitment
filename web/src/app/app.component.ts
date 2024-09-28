@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {NotesComponent} from "./components/notes/notes.component";
+import {PostsComponent} from "./components/posts/posts.component";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
 import {CreatePostPopupComponent} from "./components/create-post-popup/create-post-popup.component";
 import {EditPostPopupComponent} from "./components/edit-post-popup/edit-post-popup.component";
@@ -13,7 +13,7 @@ import {NgIf} from "@angular/common";
   templateUrl: './app.component.html',
   imports: [
     HttpClientModule,
-    NotesComponent,
+    PostsComponent,
     CreatePostPopupComponent,
     EditPostPopupComponent,
     NgIf

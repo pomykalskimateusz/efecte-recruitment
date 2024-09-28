@@ -11,9 +11,9 @@
     (postDeletedEvent)="handlePostModified()"
     (postUpdatedEvent)="handlePostModified()"
   ></app-edit-post-popup>
-  <app-notes
+  <app-posts
     [posts]="posts"
     (createPostDialogOpenedEvent)="showCreatePostDialog()"
     (editPostDialogOpenedEvent)="showEditPostDialog($event)"
-  ></app-notes>
+  ></app-posts>
 </div>

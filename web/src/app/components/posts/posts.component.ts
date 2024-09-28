@@ -5,7 +5,7 @@ import {CreatePostPopupComponent} from "../create-post-popup/create-post-popup.c
 import {EditPostPopupComponent} from "../edit-post-popup/edit-post-popup.component";
 
 @Component({
-  selector: 'app-notes',
+  selector: 'app-posts',
   standalone: true,
   imports: [
     NgForOf,
@@ -13,10 +13,10 @@ import {EditPostPopupComponent} from "../edit-post-popup/edit-post-popup.compone
     NgIf,
     EditPostPopupComponent
   ],
-  templateUrl: './notes.component.html',
-  styleUrl: './notes.component.css'
+  templateUrl: './posts.component.html',
+  styleUrl: './posts.component.css'
 })
-export class NotesComponent {
+export class PostsComponent {
   @Input() posts: Post[] = [];
   @Output() createPostDialogOpenedEvent = new EventEmitter<string>();
   @Output() editPostDialogOpenedEvent = new EventEmitter<string>()
