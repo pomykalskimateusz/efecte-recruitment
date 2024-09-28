@@ -2,6 +2,7 @@ package com.efecte.efecterecruitment.post;
 
 import com.efecte.efecterecruitment.DatabaseContainer;
 import com.efecte.efecterecruitment.exception.ConflictException;
+import com.efecte.efecterecruitment.model.Post;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -9,10 +10,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PostServiceTest extends DatabaseContainer {
     @Autowired
@@ -154,6 +158,48 @@ public class PostServiceTest extends DatabaseContainer {
     @Test
     void shouldThrowExceptionForDeletingNotExistingPost() {
         assertThrows(IllegalArgumentException.class, () -> postService.deletePost(1L, UUID.randomUUID(), 1));
+    }
+
+    @Test
+    void shouldReturnOnlySessionAccountPosts() {
+        // GIVEN two mocked session account id and created posts
+        var sessionAccountId1 = 1L;
+        var sessionAccountId2 = 2L;
+        var postId1 = createPost(sessionAccountId1);
+        var postId2 = createPost(sessionAccountId1);
+        var postId3 = createPost(sessionAccountId2);
+        var postId4 = createPost(sessionAccountId2);
+
+        // WHEN fetching posts by different accounts
+        var sessionAccount1Posts = postService.fetchPostList(sessionAccountId1);
+        var sessionAccount2Posts = postService.fetchPostList(sessionAccountId2);
+
+        // THEN session account 1 should fetch only own posts
+        assertEquals(2, sessionAccount1Posts.size());
+        var post1 = extractPostById(sessionAccount1Posts, postId1);
+        var post2 = extractPostById(sessionAccount1Posts, postId2);
+
+        assertTrue(post1.isPresent());
+        assertTrue(post2.isPresent());
+        assertEquals(postId1, post1.get().getId());
+        assertEquals(postId2, post2.get().getId());
+
+        // AND THEN session account 2 should fetch only own posts
+        assertEquals(2, sessionAccount2Posts.size());
+        var post3 = extractPostById(sessionAccount2Posts, postId3);
+        var post4 = extractPostById(sessionAccount2Posts, postId4);
+
+        assertTrue(post3.isPresent());
+        assertTrue(post4.isPresent());
+        assertEquals(postId3, post3.get().getId());
+        assertEquals(postId4, post4.get().getId());
+    }
+
+    private Optional<Post> extractPostById(List<Post> posts, UUID postId) {
+        return posts
+                .stream()
+                .filter(it -> postId.equals(it.getId()))
+                .findFirst();
     }
 
     private UUID createPost(Long accountId) {
