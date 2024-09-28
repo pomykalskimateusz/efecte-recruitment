@@ -9,6 +9,9 @@
 
 ### 2. Create schema `db_changelog` in database
 
+### 3. Make sure you have `Docker` installed and can run it without `sudo`, as it is required during tests for `testcontainers` library.
+
+
 ## Local environment
 1. Run the `docker-compose -f docker/docker-compose.yml up --build`
 
