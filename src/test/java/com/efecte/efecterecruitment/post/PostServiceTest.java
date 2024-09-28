@@ -2,6 +2,7 @@ package com.efecte.efecterecruitment.post;
 
 import com.efecte.efecterecruitment.DatabaseContainer;
 import com.efecte.efecterecruitment.exception.ConflictException;
+import com.efecte.efecterecruitment.exception.ResourceNotFoundException;
 import com.efecte.efecterecruitment.model.Post;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -35,7 +36,7 @@ public class PostServiceTest extends DatabaseContainer {
         var content = generatePostContent(contentLength);
 
         // WHEN saving post
-        var postId = postService.savePost(sessionAccountId, content);
+        var postId = createPost(sessionAccountId, content);
 
         // THEN post should be saved and available to read by session account
         var post = postService.fetchPost(sessionAccountId, postId);
@@ -65,10 +66,9 @@ public class PostServiceTest extends DatabaseContainer {
 
         // WHEN updating post with valid content and correct version (equals 1)
         var content = generatePostContent(contentLength);
-        postService.updatePost(sessionAccountId, postId, content, 1);
+        var updatedPost = postService.updatePost(sessionAccountId, postId, content, 1);
 
         // THEN post content should be updated along with version
-        var updatedPost = postService.fetchPost(sessionAccountId, postId);
         assertEquals(postId, updatedPost.getId());
         assertEquals(content, updatedPost.getContent());
         assertEquals(2, updatedPost.getVersion());
@@ -104,12 +104,12 @@ public class PostServiceTest extends DatabaseContainer {
         var postId = createPost(sessionAccountId);
 
         // WHEN updating post with differ account id than mocked session account id THEN exception should be thrown
-        assertThrows(IllegalArgumentException.class, () -> postService.updatePost(2L, postId, generatePostContent(10), 1));
+        assertThrows(ResourceNotFoundException.class, () -> postService.updatePost(2L, postId, generatePostContent(10), 1));
     }
 
     @Test
     void shouldThrowExceptionForUpdatingNotExistingPost() {
-        assertThrows(IllegalArgumentException.class, () -> postService.updatePost(1L, UUID.randomUUID(), generatePostContent(10), 1));
+        assertThrows(ResourceNotFoundException.class, () -> postService.updatePost(1L, UUID.randomUUID(), generatePostContent(10), 1));
     }
 
     @Test
@@ -141,7 +141,7 @@ public class PostServiceTest extends DatabaseContainer {
         assertEquals(1, postsBeforeDeleting.size());
 
         // WHEN deleting post by not post owner THEN exception should be thrown
-        assertThrows(IllegalArgumentException.class, () -> postService.deletePost(2L, postId1, 1));
+        assertThrows(ResourceNotFoundException.class, () -> postService.deletePost(2L, postId1, 1));
     }
 
     @Test
@@ -157,7 +157,7 @@ public class PostServiceTest extends DatabaseContainer {
 
     @Test
     void shouldThrowExceptionForDeletingNotExistingPost() {
-        assertThrows(IllegalArgumentException.class, () -> postService.deletePost(1L, UUID.randomUUID(), 1));
+        assertThrows(ResourceNotFoundException.class, () -> postService.deletePost(1L, UUID.randomUUID(), 1));
     }
 
     @Test
@@ -202,8 +202,12 @@ public class PostServiceTest extends DatabaseContainer {
                 .findFirst();
     }
 
+    private UUID createPost(Long accountId, String content) {
+        return postService.savePost(accountId, content).getId();
+    }
+
     private UUID createPost(Long accountId) {
-        return postService.savePost(accountId, generatePostContent(100));
+        return postService.savePost(accountId, generatePostContent(100)).getId();
     }
 
     private String generatePostContent(int length) {

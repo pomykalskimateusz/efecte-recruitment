@@ -23,28 +23,31 @@ public class PostRepository {
     DSLContext dslContext;
 
     @Transactional
-    public UUID insert(Long accountId, String content) {
+    public Optional<Post> insert(Long accountId, String content) {
         return dslContext.insertInto(POST)
                 .set(POST.ID, UUID.randomUUID())
                 .set(POST.ACCOUNT_ID, accountId)
                 .set(POST.CONTENT, content)
                 .set(POST.VERSION, 1)
-                .returningResult(POST.ID)
-                .fetchOne()
-                .map(dbRecord -> dbRecord.get(POST.ID));
+                .returningResult(POST.asterisk())
+                .fetchOptional()
+                .map(dbRecord -> dbRecord.into(Post.class));
     }
 
     @Transactional
-    public void update(UUID postId, String content, int version) {
-        var conflict = dslContext.update(POST)
+    public Optional<Post> update(UUID postId, String content, int version) {
+        return dslContext.update(POST)
                 .set(POST.CONTENT, content)
                 .set(POST.VERSION, POST.VERSION.plus(1))
                 .where(POST.ID.eq(postId))
-                .and(POST.VERSION.eq(version))
-                .execute() == 0;
-        if(conflict) {
-            throw new ConflictException();
-        }
+                .returning(POST.asterisk())
+                .fetchOptional()
+                .map(dbRecord -> {
+                    if ((dbRecord.get(POST.VERSION) - 1) != version) {
+                        throw new ConflictException();
+                    }
+                    return dbRecord.into(Post.class);
+                });
     }
 
     @Transactional

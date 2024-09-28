@@ -1,5 +1,6 @@
 package com.efecte.efecterecruitment.post;
 
+import com.efecte.efecterecruitment.exception.ResourceNotFoundException;
 import com.efecte.efecterecruitment.model.Post;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -17,18 +19,22 @@ public class PostService {
     PostRepository postRepository;
 
     @Transactional
-    public UUID savePost(Long accountId, String content) {
+    public Post savePost(Long accountId, String content) {
         ensureContentIsValid(content);
 
-        return postRepository.insert(accountId, content);
+        return postRepository
+                .insert(accountId, content)
+                .orElseThrow(RuntimeException::new);
     }
 
     @Transactional
-    public void updatePost(Long accountId, UUID postId, String content, int version) {
+    public Post updatePost(Long accountId, UUID postId, String content, int version) {
         ensureContentIsValid(content);
         ensurePostCanBeAccessed(accountId, postId);
 
-        postRepository.update(postId, content, version);
+        return postRepository
+                .update(postId, content, version)
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Transactional
@@ -42,7 +48,7 @@ public class PostService {
     public Post fetchPost(Long accountId, UUID postId) {
         return postRepository
                 .findByPostId(accountId, postId)
-                .orElseThrow(() -> new IllegalArgumentException("Post not found: " + postId));
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Transactional
@@ -59,6 +65,6 @@ public class PostService {
     private void ensurePostCanBeAccessed(Long accountId, UUID postId) {
         postRepository
                 .findByPostId(accountId, postId)
-                .orElseThrow(() -> new IllegalArgumentException("Session account does not have access to post: " + postId));
+                .orElseThrow(ResourceNotFoundException::new);
     }
 }
