@@ -24,7 +24,9 @@ export class NotesComponent implements OnInit {
   constructor(public noteStateService: NoteStateServiceService) {}
 
   ngOnInit(): void {
-    this.fetchNotes();
+    this.noteStateService.currentRefreshNoteState.subscribe((_) => {
+      this.fetchNotes();
+    })
   }
 
   fetchNotes() {

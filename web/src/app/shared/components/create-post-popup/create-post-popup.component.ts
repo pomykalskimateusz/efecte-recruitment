@@ -30,6 +30,7 @@ export class CreatePostPopupComponent implements OnInit {
     console.log(this.createPostForm.value);
     this.httpClient.post(`http://localhost:8080/posts`, {content: this.createPostForm.value.content})
       .subscribe((result) => {
+        this.noteStateService.refreshNotes()
         this.noteStateService.hideCreatePostDialog();
     }, (error: HttpErrorResponse) => {
         if(error.status === 500) {
