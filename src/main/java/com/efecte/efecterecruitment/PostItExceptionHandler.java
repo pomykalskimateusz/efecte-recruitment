@@ -1,7 +1,7 @@
 package com.efecte.efecterecruitment;
 
 import com.efecte.efecterecruitment.exception.ConflictException;
-import com.github.dockerjava.api.exception.NotFoundException;
+import com.efecte.efecterecruitment.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,8 +14,8 @@ public class PostItExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
-    @ExceptionHandler(value = NotFoundException.class)
-    public ResponseEntity<Void> handleNotFound(NotFoundException notFoundException) {
+    @ExceptionHandler(value = ResourceNotFoundException.class)
+    public ResponseEntity<Void> handleNotFound(ResourceNotFoundException resourceNotFoundException) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
