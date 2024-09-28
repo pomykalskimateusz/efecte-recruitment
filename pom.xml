@@ -68,6 +68,18 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.1.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-testcontainers</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -77,7 +89,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <finalName>efecte-post-it</finalName>
-                    <mainClass>com.efecte.efecterecruitment.EfectePostItApplication</mainClass>
+                    <mainClass>com.efecte.efecterecruitment.PostItApplication</mainClass>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
@@ -162,12 +174,6 @@
                                 </property>
                             </properties>
                             <includes>.*</includes>
-                            <schemata>
-                                <schema>
-                                    <inputSchema>POSTS</inputSchema>
-                                    <outputSchema>POSTS</outputSchema>
-                                </schema>
-                            </schemata>
                         </database>
                         <generate>
                             <daos>true</daos>
