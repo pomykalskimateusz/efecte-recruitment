@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgIf} from "@angular/common";
-import {ApiService} from "../../services/api.service";
+import {ApiService} from "../../shared/services/api.service";
 
 @Component({
   selector: 'app-create-post-popup',
@@ -11,7 +11,6 @@ import {ApiService} from "../../services/api.service";
     NgIf
   ],
   templateUrl: './create-post-popup.component.html',
-  styleUrl: './create-post-popup.component.css'
 })
 export class CreatePostPopupComponent {
   @Output() postCreatedEvent = new EventEmitter()

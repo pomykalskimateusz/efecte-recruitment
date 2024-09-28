@@ -1,8 +1,8 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Post} from "../../models/post.model";
 import {NgForOf, NgIf} from "@angular/common";
-import {CreatePostPopupComponent} from "../../shared/components/create-post-popup/create-post-popup.component";
-import {EditPostPopupComponent} from "../../shared/components/edit-post-popup/edit-post-popup.component";
+import {CreatePostPopupComponent} from "../create-post-popup/create-post-popup.component";
+import {EditPostPopupComponent} from "../edit-post-popup/edit-post-popup.component";
 
 @Component({
   selector: 'app-notes',

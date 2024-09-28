@@ -1,8 +1,8 @@
 import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgIf} from "@angular/common";
-import {Post} from "../../../models/post.model";
-import {ApiService} from "../../services/api.service";
+import {Post} from "../../models/post.model";
+import {ApiService} from "../../shared/services/api.service";
 
 @Component({
   selector: 'app-edit-post-popup',
