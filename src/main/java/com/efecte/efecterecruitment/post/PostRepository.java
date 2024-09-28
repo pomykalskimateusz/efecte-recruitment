@@ -1,16 +1,17 @@
 package com.efecte.efecterecruitment.post;
 
 import com.efecte.efecterecruitment.exception.ConflictException;
+import com.efecte.efecterecruitment.jooq.entity.tables.records.PostRecord;
 import com.efecte.efecterecruitment.model.Post;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.jooq.DSLContext;
+import org.jooq.Record;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -44,9 +45,8 @@ public class PostRepository {
                 .returning(POST.asterisk())
                 .fetchOptional()
                 .map(dbRecord -> {
-                    if ((dbRecord.get(POST.VERSION) - 1) != version) {
-                        throw new ConflictException();
-                    }
+                    throwExceptionIfVersionConflict(dbRecord, version + 1);
+
                     return dbRecord.into(Post.class);
                 });
     }
@@ -56,14 +56,19 @@ public class PostRepository {
         return dslContext.deleteFrom(POST)
                 .where(POST.ID.eq(postId))
                 .and(POST.ACCOUNT_ID.eq(accountId))
-                .returningResult(POST.ID, POST.VERSION)
+                .returningResult(POST.asterisk())
                 .fetchOptional()
                 .map(dbRecord -> {
-                    if (!Objects.equals(dbRecord.get(POST.VERSION), version)) {
-                        throw new ConflictException();
-                    }
+                    throwExceptionIfVersionConflict(dbRecord, version);
+
                     return dbRecord.get(POST.ID);
                 });
+    }
+
+    private void throwExceptionIfVersionConflict(Record dbRecord, int version) {
+        if(dbRecord.get(POST.VERSION) != version) {
+            throw new ConflictException();
+        }
     }
 
     @Transactional
