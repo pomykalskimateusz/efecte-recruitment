@@ -11,8 +11,8 @@
       <div id="error" *ngIf="errorMessage !== null">{{errorMessage}}</div>
     </div>
     <div id="actions">
-      <button class="cancel" (click)="onPopupCancelled()">Cancel</button>
-      <button class="delete" (click)="deletePost()">Delete</button>
+      <button type="button" class="cancel" (click)="onPopupCancelled()">Cancel</button>
+      <button type="button" class="delete" (click)="deletePost()">Delete</button>
       <button type="submit" [disabled]="createPostForm.invalid">Save</button>
     </div>
   </form>

@@ -1,6 +1,6 @@
 import {Component, inject, OnInit, ViewChild} from '@angular/core';
 import {NotesComponent} from "./components/notes/notes.component";
-import {HttpClient, HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from "@angular/common/http";
 import {CreatePostPopupComponent} from "./shared/components/create-post-popup/create-post-popup.component";
 import {EditPostPopupComponent} from "./shared/components/edit-post-popup/edit-post-popup.component";
 import {Post,} from "./models/post.model";

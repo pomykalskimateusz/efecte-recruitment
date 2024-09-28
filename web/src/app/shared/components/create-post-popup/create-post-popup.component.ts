@@ -1,8 +1,7 @@
-import {Component, EventEmitter, inject, Output} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {NgIf} from "@angular/common";
-import {buildErrorMessage} from "../../utils/http-response.utils";
+import {ApiService} from "../../services/api.service";
 
 @Component({
   selector: 'app-create-post-popup',
@@ -18,7 +17,7 @@ export class CreatePostPopupComponent {
   @Output() postCreatedEvent = new EventEmitter()
   @Output() createPopupCancelledEvent = new EventEmitter()
 
-  httpClient = inject(HttpClient);
+  constructor(private apiService: ApiService) {}
 
   errorMessage: string | null = null
   createPostForm: FormGroup = new FormGroup({
@@ -30,11 +29,10 @@ export class CreatePostPopupComponent {
   }
 
   onSubmit() {
-    this.httpClient.post(`http://localhost:8080/posts`, {content: this.createPostForm.value.content}).subscribe({
-      next: (_) => this.postCreatedEvent.emit(),
-      error: (error: HttpErrorResponse) => {
-        this.errorMessage = buildErrorMessage(error)
-      }
-    })
+    this.apiService.savePost(
+      this.createPostForm.value.content,
+      () => this.postCreatedEvent.emit(),
+      (error) => this.errorMessage = error
+      )
   }
 }

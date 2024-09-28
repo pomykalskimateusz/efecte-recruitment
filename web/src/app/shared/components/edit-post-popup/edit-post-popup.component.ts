@@ -1,9 +1,8 @@
 import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {NgIf} from "@angular/common";
 import {Post} from "../../../models/post.model";
-import {buildErrorMessage} from "../../utils/http-response.utils";
+import {ApiService} from "../../services/api.service";
 
 @Component({
   selector: 'app-edit-post-popup',
@@ -21,7 +20,7 @@ export class EditPostPopupComponent implements OnInit {
   @Output() postDeletedEvent = new EventEmitter()
   @Output() postUpdatedEvent = new EventEmitter()
 
-  httpClient = inject(HttpClient);
+  constructor(private apiService: ApiService) {}
 
   errorMessage: string | null = null
   createPostForm: FormGroup = new FormGroup({
@@ -37,24 +36,21 @@ export class EditPostPopupComponent implements OnInit {
   }
 
   deletePost() {
-    this.httpClient.delete(`http://localhost:8080/posts/${this.post?.id}?version=${this.post?.version}`).subscribe({
-      next: (_) => this.postDeletedEvent.emit(),
-      error: (error: HttpErrorResponse) => {
-        this.errorMessage = buildErrorMessage(error)
-      }
-    })
+    this.apiService.deletePost(
+      this.post!.id,
+      this.post!.version,
+      () => this.postDeletedEvent.emit(),
+      (error) => this.errorMessage = error
+    )
   }
 
   onSubmit() {
-    const request = {
-      content: this.createPostForm.value.content,
-      version: this.post?.version
-    }
-    this.httpClient.put(`http://localhost:8080/posts/${this.post?.id}`, request).subscribe({
-      next: (_) => this.postUpdatedEvent.emit(),
-      error: (error: HttpErrorResponse) => {
-        this.errorMessage = buildErrorMessage(error)
-      }
-    })
+    this.apiService.updatePost(
+      this.post!.id,
+      this.createPostForm.value.content,
+      this.post!.version,
+      () => this.postUpdatedEvent.emit(),
+      (error) => this.errorMessage = error
+    )
   }
 }
