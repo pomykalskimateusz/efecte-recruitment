@@ -12,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,28 +22,15 @@ import java.util.UUID;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class PostController implements PostsApi {
     static String INDEX_HTML_PATH = "/web/browser/index.html";
-    static String CSS_HTML_PATH = "/web/browser/styles-5INURTSO.css";
-    static String JS_1_HTML_PATH = "/web/browser/polyfills-FFHMD2TL.js";
-    static String JS_2_HTML_PATH = "/web/browser/main-A5V3K3FC.js";
 
     PostService postService;
 
-    @GetMapping("/styles-5INURTSO.css")
-    public String css() {
-        return CSS_HTML_PATH;
+    @GetMapping("/{file}")
+    public String staticFile(@PathVariable String file) {
+        return "/web/browser/" + file;
     }
 
-    @GetMapping("/polyfills-FFHMD2TL.js")
-    public String js_1() {
-        return JS_1_HTML_PATH;
-    }
-
-    @GetMapping("/main-A5V3K3FC.js")
-    public String js_2() {
-        return JS_2_HTML_PATH;
-    }
-
-    @GetMapping("/application")
+    @GetMapping()
     public String index() {
         return INDEX_HTML_PATH;
     }
