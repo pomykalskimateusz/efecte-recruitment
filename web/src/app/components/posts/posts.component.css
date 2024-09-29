@@ -1,11 +1,11 @@
-.notes-container {
+.posts-container {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   width: 90%;
   margin: auto;
 }
-.note-box {
+.post-box {
   border: 1.5px solid cornflowerblue;
   border-radius: 5px;
   padding: 10px;
@@ -17,7 +17,7 @@
   justify-content: center;
   text-align: center;
 }
-.note-box:hover {
+.post-box:hover {
   cursor: pointer;
 }
 
